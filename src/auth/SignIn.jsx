@@ -1,14 +1,16 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { signInRequest } from "../store/authunk";
 import ErrorMessages from "../components/UI/ErrorMessages";
 import { Link, useNavigate } from "react-router";
+import { isAuth } from "../store/authSlice";
+import { signInRequest } from "../store/authunk";
 
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { role } = useSelector((state) => state.auth);
 
   const {
     register,
@@ -22,9 +24,18 @@ export default function SignIn() {
     },
   });
 
+  useEffect(() => {
+    const authData = JSON.parse(localStorage.getItem("auth"));
+    if (authData?.data?.role) {
+      dispatch(isAuth(authData.data.role));
+      navigate("/");
+    }
+  }, [dispatch, navigate]);
+
   const submitHandler = (userData) => {
     dispatch(signInRequest({ userData, navigate }));
   };
+
   return (
     <StyledRefisterPage>
       <h1>LoginPage</h1>
@@ -39,7 +50,7 @@ export default function SignIn() {
                 },
                 pattern: {
                   value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                  message: "не правильно введень email",
+                  message: "Неправильный email",
                 },
               })}
               type="email"
@@ -52,24 +63,24 @@ export default function SignIn() {
               {...register("password", {
                 required: {
                   value: true,
-                  message: "Введите password",
+                  message: "Введите пароль",
                 },
                 minLength: {
                   value: 5,
-                  message: "пароль должен быть неменее 6 символов",
+                  message: "Пароль должен быть не менее 6 символов",
                 },
                 maxLength: {
                   value: 15,
-                  message: "слишком много ",
+                  message: "Слишком длинный пароль",
                 },
               })}
               type="password"
-              placeholder="Введите password"
+              placeholder="Введите пароль"
             />
             <ErrorMessages>{errors?.password?.message}</ErrorMessages>
           </StyledContainer>
           <button>Отправить</button>
-          <StyledLink to={"/register"}>go to Register page</StyledLink>
+          <StyledLink to={"/register"}>Go to page registration</StyledLink>
         </form>
       </section>
     </StyledRefisterPage>
@@ -109,6 +120,7 @@ const StyledRefisterPage = styled.div`
     }
   }
 `;
+
 const StyledContainer = styled.div`
   height: 63px;
   display: flex;
@@ -122,6 +134,7 @@ const StyledContainer = styled.div`
     border: none;
   }
 `;
+
 const StyledLink = styled(Link)`
   text-align: center;
   font-size: 17px;
