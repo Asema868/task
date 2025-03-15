@@ -4,7 +4,7 @@ import { Container, styled } from "@mui/material";
 import FilterBar from "../components/FilterBar";
 import CharacterList from "../components/character/CharacterList";
 import { useDebounce } from "use-debounce";
-import { useParams, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { serializeObjectToQueryParams } from "../utils/helpers/general";
 
 const fetchCharacters = async (searchByName, gender, status) => {

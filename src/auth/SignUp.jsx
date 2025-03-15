@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { signUpRequest } from "../store/authunk";
 import ErrorMessages from "../components/UI/ErrorMessages";
+import { isAuth } from "../store/authSlice";
 
 export default function SignUp() {
   const dispatch = useDispatch();
@@ -21,6 +22,12 @@ export default function SignUp() {
       lastName: "",
     },
   });
+  const handleRegister = () => {
+    const role = "user";
+    localStorage.setItem("auth", JSON.stringify({ data: { role } }));
+    dispatch(isAuth(role));
+    navigate("/");
+  };
 
   const submitHandler = (userData) => {
     if (userData.email === "admin@gmail.com") {
@@ -90,8 +97,9 @@ export default function SignUp() {
             />
             <ErrorMessages>{errors?.password?.message}</ErrorMessages>
           </StyledContainer>
-          <button>Отправить</button>
-          <StyledLink to={"/login"}>go to login page </StyledLink>
+          <button onClick={handleRegister}>Отправить</button>
+        
+          <StyledLink to={"/"}>go to login page </StyledLink>
         </form>
       </section>
     </StyledRefisterPage>

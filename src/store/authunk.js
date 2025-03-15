@@ -6,7 +6,7 @@ export const signUpRequest = createAsyncThunk(
   async ({ userData, navigate }, { rejectWithValue }) => {
     try {
       const { data } = await axiosInstance.post("/register", userData);
-      navigate("/");
+      navigate("/register");
       return data;
     } catch (error) {
       return rejectWithValue;
@@ -20,7 +20,7 @@ export const signInRequest = createAsyncThunk(
     try {
       const { data } = await axiosInstance.post("/auth", userData);
 
-      navigate("/");
+      navigate("/login");
 
       return data;
     } catch (error) {
